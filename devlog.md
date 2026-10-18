@@ -31,3 +31,11 @@ Overall, this was a productive session. My encryption program works well and sho
 # Oct 18 3:25pm
 
 I'm jumping directly into the next session here because I'm pretty focused on the project and I don't want to forget any ideas I had. For this session, I will be implementing the logger. For the timestamps, I can use Python's datetime module, and the user's encrpytion input for the action and message. I think I will test this with the encryption program to make sure it logs the activity properly, then add both to the driver in a future session. I don't think I will need to touch the encryption implementation too much for this session either.
+
+# Oct 18 4:10pm
+
+This session, I worked on the logger program. It was fairly quick to implement; I decided I would keep it simple and just log any messages that come in for now, since the driver and encryption program should handle formatting and any edgecases.
+
+Additionally, I've decided that if messages with only one word come in, and the command is not QUIT, they will not be logged. This could be inputs that are only one command or simply invalid inputs. I don't think it would be relevant to log these errors for the purpose of this project.
+
+For the next session, I will implement my driver program. I will also connect to the logger and encryption files written through pipes.
