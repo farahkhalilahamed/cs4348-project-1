@@ -10,7 +10,7 @@ with open(file, 'a') as logfile:
     if not activity:
       continue
     
-    if activity[0] == 'STOPPED':
+    if activity[0] == 'QUIT':
       timestamp = datetime.now().strftime('%Y-%m-%d %H:%M')
       log = f'{timestamp} [STOPPED] Logging Stopped.\n'
       logfile.write(log)
