@@ -39,3 +39,7 @@ This session, I worked on the logger program. It was fairly quick to implement; 
 Additionally, I've decided that if messages with only one word come in, and the command is not QUIT, they will not be logged. This could be inputs that are only one command or simply invalid inputs. I don't think it would be relevant to log these errors for the purpose of this project.
 
 For the next session, I will implement my driver program. I will also connect to the logger and encryption files written through pipes.
+
+# Oct 18 4:43pm
+
+I took a short break and am now starting a new session. This time, I'm working on the driver implementation. One thing I realized I wasn't really clear on was what strings to store in history. I will be storing any inputs from the user, and the results after encrypting/decrypting. I also won't be storing the same string twice.
