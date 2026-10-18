@@ -15,3 +15,7 @@ This project also asks for 3 programs:
 For this project, I'm choosing to code in Python, mainly because I have some experience with writing process-based scripts in Python. It is also more concise and readable, so I can ensure the project requirements will be met and show how each program is separate.
 
 In the next session, I'll begin coding. I'm thinking that I will start with the encryption program, then the logger, and finally the driver. I'm choosing to implement the encrpyion program first because it will be the core part of the project, and could influence how the other two programs will be written.
+
+# Oct 18 12:51pm
+
+As mentioned last session, this session I'm building the encryption program. My thinking for implementation is to first build the encrpytion/decrpytion funcionalities and make sure its accurate, and then format it properly to fit the project's requirements (using RESULT or ERROR).
