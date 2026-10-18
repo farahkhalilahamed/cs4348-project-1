@@ -19,3 +19,11 @@ In the next session, I'll begin coding. I'm thinking that I will start with the 
 # Oct 18 12:51pm
 
 As mentioned last session, this session I'm building the encryption program. My thinking for implementation is to first build the encrpytion/decrpytion funcionalities and make sure its accurate, and then format it properly to fit the project's requirements (using RESULT or ERROR).
+
+# Oct 18 3:12pm
+
+For this session, I worked on my encryption program. I built it to work with the given commands, and also tested edgecases, such as empty inputs or adding non-alphabet characters.
+
+One question I ran into while coding was how to deal with inputs that only have a command (like PASS or ENCRYPT) with no input after. I'm thinking that if that edge case occurs, the program should output an ERROR message and wait for next input, rather than encrypting an empty string or erasing the current passkey.
+
+Overall, this was a productive session. My encryption program works well and should be fairly simple to connect to the driver as well. I was also able to format my results to match the project instructions as well. Next session, I will continue with the plan I had in my initial planning, to implement the logger.
