@@ -27,3 +27,7 @@ For this session, I worked on my encryption program. I built it to work with the
 One question I ran into while coding was how to deal with inputs that only have a command (like PASS or ENCRYPT) with no input after. I'm thinking that if that edge case occurs, the program should output an ERROR message and wait for next input, rather than encrypting an empty string or erasing the current passkey.
 
 Overall, this was a productive session. My encryption program works well and should be fairly simple to connect to the driver as well. I was also able to format my results to match the project instructions as well. Next session, I will continue with the plan I had in my initial planning, to implement the logger.
+
+# Oct 18 3:25pm
+
+I'm jumping directly into the next session here because I'm pretty focused on the project and I don't want to forget any ideas I had. For this session, I will be implementing the logger. For the timestamps, I can use Python's datetime module, and the user's encrpytion input for the action and message. I think I will test this with the encryption program to make sure it logs the activity properly, then add both to the driver in a future session. I don't think I will need to touch the encryption implementation too much for this session either.
