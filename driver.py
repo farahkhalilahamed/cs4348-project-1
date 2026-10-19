@@ -1,17 +1,10 @@
 from subprocess import Popen, PIPE
 import sys
 
-def show_history(history):
+def show_history(history, allow_selection=True):
   print('\n-------------------------------------------------------------')
   print('                          History                              ')
   print('-------------------------------------------------------------\n')
-
-  # items = []
-  # for entry in history:
-  #   items.append(entry['input'])
-
-  #   if not entry['result'].startswith('Error:'):
-  #       items.append(entry['result'])
   
   if not history:
     print('No history available.')
@@ -19,20 +12,21 @@ def show_history(history):
   for i, item in enumerate(history, start=1):
     print(f'{i}. {item}')
 
-  print(f'{len(history) + 1}. (Go Back)')
+  if allow_selection:
+    print(f'{len(history) + 1}. (Go Back)')
   print('\n-------------------------------------------------------------')
+  
+  if not allow_selection:
+    return None
 
   while True:
     selection = input('Enter number to select string: ').strip()
-
     if selection.isdigit():
-        index = int(selection)
-
-        if 1 <= index <= len(history):
-            return history[index - 1]
-
-        elif index == len(history) + 1:
-            return None
+      index = int(selection)
+      if 1 <= index <= len(history):
+        return history[index - 1]
+      elif index == len(history) + 1:
+        return None
           
     print('ERROR Invalid history selection')
 
@@ -67,15 +61,15 @@ def main():
     # PASS ---------------------------------------------------------------------------
     elif command == 'PASSWORD':
       use_history = input('Would you like to use history? (y/n) ').upper()
+      
       if use_history == 'Y':
-          password = show_history(history)
-
-          if password is None:
-              password = input('Enter password: ').strip()
-          elif password == 'INVALID':
-              continue
-      else:
+        password = show_history(history)
+        if password is None:
           password = input('Enter password: ').strip()
+        elif password == 'INVALID':
+          continue
+      else:
+        password = input('Enter password: ').strip()
       
       logger.stdin.write('SET_PASSWORD Setting passkey.\n')
       logger.stdin.flush()
@@ -91,66 +85,117 @@ def main():
 
         response = encryption.stdout.readline().strip()
 
-        if response == "RESULT":
-            print('Password set successfully.')
-            logger.stdin.write('SET_PASSWORD Success.\n')
-            logger.stdin.flush()
+        if response == 'RESULT':
+          print('Password set successfully.')
+          logger.stdin.write('SET_PASSWORD Success.\n')
+          logger.stdin.flush()
         else:
-            print(response)
-            logger.stdin.write(f'SET_PASSWORD Error: {response}\n')
-            logger.stdin.flush()
+          print(response)
+          logger.stdin.write(f'SET_PASSWORD Error: {response}\n')
+          logger.stdin.flush()
     # ENCRYPT ---------------------------------------------------------------------------
     elif command == 'ENCRYPT':
-        use_history = input('Would you like to use history? (y/n) ').upper()
+      use_history = input('Would you like to use history? (y/n) ').upper()
 
-        if use_history == 'Y':
-            word = show_history(history)
-
-            if word is None:
-                word = input('Enter string to encrypt: ').strip()
-            elif word == 'INVALID':
-                continue
-        else:
-            word = input('Enter string to encrypt: ').strip()
-        
-        logger.stdin.write(f'ENCRYPT {word}\n')
+      if use_history == 'Y':
+        word = show_history(history)
+        if word is None:
+          word = input('Enter string to encrypt: ').strip()
+        elif word == 'INVALID':
+          continue
+      else:
+        word = input('Enter string to encrypt: ').strip()
+      
+      logger.stdin.write(f'ENCRYPT {word}\n')
+      logger.stdin.flush()
+                  
+      if not word.isalpha():
+        error_message = 'Input string should only consist of letters.'
+        print(f'ERROR {error_message}')
+        logger.stdin.write(f'ENCRYPT Error: {error_message}\n')
         logger.stdin.flush()
-                    
-        if not word.isalpha():
-            error_message = 'Input string should only consist of letters.'
-            print(f'ERROR {error_message}')
-            logger.stdin.write(f'ENCRYPT Error: {error_message}\n')
-            logger.stdin.flush()
+      else:
+        encryption.stdin.write(f'ENCRYPT {word}\n')
+        encryption.stdin.flush()
+
+        response = encryption.stdout.readline().strip()
+
+        if response.startswith('RESULT '):
+          print(f'{response}')
+          result = response[len('RESULT '):]
+
+          if word.upper() not in history:
+            history.append(word.upper())
+
+          if result.upper() not in history:
+            history.append(result.upper())
+
+          logger.stdin.write(f'ENCRYPT Success: {result}\n')
+          logger.stdin.flush()
         else:
-            encryption.stdin.write(f'ENCRYPT {word}\n')
-            encryption.stdin.flush()
+          print(f'{response}')
+          error_message = response.removeprefix('ERROR ')
+          
+          if word.upper() not in history:
+            history.append(word.upper())
 
-            response = encryption.stdout.readline().strip()
-
-            if response.startswith('RESULT '):
-                result = response[len('RESULT '):]
-                print(f'Result: {result}')
-
-                if word not in history:
-                  history.append(word.upper())
-                if result not in history:
-                  history.append(result.upper())
-
-                logger.stdin.write(f'ENCRYPT Success: {result}\n')
-                logger.stdin.flush()
-            else:
-                print(f'{error_message}')
-
-                if word not in history:
-                  history.append(word.upper())
-                if result not in history:
-                  history.append(result.upper())
-
-                logger.stdin.write(f'ENCRYPT Error: {error_message}\n')
-                logger.stdin.flush()
+          logger.stdin.write(f'ENCRYPT Error: {error_message}\n')
+          logger.stdin.flush()
     # DECRYPT ---------------------------------------------------------------------------
+    elif command == 'DECRYPT':
+      use_history = input('Would you like to use history? (y/n) ').upper()
+
+      if use_history == 'Y':
+        word = show_history(history)
+        if word is None:
+            word = input('Enter string to decrypt: ').strip()
+      else:
+        word = input('Enter string to decrypt: ').strip()
+
+      logger.stdin.write(f'DECRYPT {word}\n')
+      logger.stdin.flush()
+      
+      if not word.isalpha():
+        error_message = 'Input string should only consist of letters.'
+        print(f'ERROR {error_message}')
+        logger.stdin.write(f'DECRYPT Error: {error_message}\n')
+        logger.stdin.flush()
+      else:
+        encryption.stdin.write(f'DECRYPT {word}\n')
+        encryption.stdin.flush()
+
+        response = encryption.stdout.readline().strip()
+
+        if response.startswith('RESULT '):
+          result = response[len('RESULT '):]
+          print(f'{response}')
+
+          if word.upper() not in history:
+            history.append(word.upper())
+
+          if result.upper() not in history:
+            history.append(result.upper())
+
+          logger.stdin.write(f'DECRYPT Success: {result}\n')
+          logger.stdin.flush()
+        else:
+          error_message = response.removeprefix('ERROR ')
+          print(f'{response}')
+          
+          if word.upper() not in history:
+            history.append(word.upper())
+
+          logger.stdin.write(f'DECRYPT Error: {error_message}\n')
+          logger.stdin.flush()
+     # HISTORY ---------------------------------------------------------------------------
+    elif command == 'HISTORY':
+      logger.stdin.write('HISTORY History Checked.\n')
+      logger.stdin.flush()
+      show_history(history, allow_selection=False)
     else:
       print('ERROR Invalid command')
+      
+    input('Hit Enter to go back to the menu. ')
 
   logger.stdin.write('QUIT \n')
   logger.stdin.flush()
@@ -162,6 +207,5 @@ def main():
   encryption.stdin.close()
   encryption.wait()
     
-
 if __name__ == '__main__':
   main()
